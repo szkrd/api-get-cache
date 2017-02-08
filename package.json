@@ -1,0 +1,40 @@
+{
+  "name": "@prepair/api-get-cache",
+  "version": "0.0.1",
+  "description": "Node http transparent proxy with in memory caching.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon --watch server server",
+    "lint": "eslint server",
+    "precommit": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prepair/api-get-cache.git"
+  },
+  "keywords": [
+    "api",
+    "cache",
+    "hack"
+  ],
+  "author": "Szabolcs Kurdi <szabolcs.kurdi@gmail.com> (https://github.com/szkrd)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/prepair/api-get-cache/issues"
+  },
+  "homepage": "https://github.com/prepair/api-get-cache#readme",
+  "devDependencies": {
+    "eslint": "3.13.1",
+    "eslint-config-semistandard": "7.0.0",
+    "eslint-config-standard": "6.2.1",
+    "eslint-plugin-promise": "3.4.0",
+    "eslint-plugin-react": "6.9.0",
+    "eslint-plugin-standard": "2.0.1",
+    "husky": "0.12.0",
+    "nodemon": "1.11.0"
+  },
+  "dependencies": {
+    "winston": "2.3.0"
+  }
+}
