@@ -15,7 +15,7 @@ Node http transparent proxy with in memory caching for GET calls.
     "PORT": 80,
     "HTTPS_PORT": 4002,
     "HTTPS_KEY": "/foo/bar/ca.key",
-    "HTTPS_CERT": "/foo/bar/ca.crt"
+    "HTTPS_CERT": "/foo/bar/ca.crt",
     "CONTENT_BLACKLIST": "<h1>We'll be back shortly</h1>|<p>Temporarily unavailable due to maintenance</p>"
   }
 }
