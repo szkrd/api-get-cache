@@ -12,11 +12,11 @@ Node http transparent proxy with in memory caching for GET calls.
     "MAX_WAIT_TIME": 1000,
     "TTL": 5000,
 
-    "PORT": 80,
+    "PORT": 4000,
     "HTTPS_PORT": 4002,
     "HTTPS_KEY": "/foo/bar/ca.key",
     "HTTPS_CERT": "/foo/bar/ca.crt",
-    "CONTENT_BLACKLIST": "<h1>We'll be back shortly</h1>|<p>Temporarily unavailable due to maintenance</p>"
+    "CONTENT_BLACKLIST": "<h1>We'll be back shortly</h1>|<p>Temporarily unavailable due to maintenance</p>|>Initialization failed</h1>"
   }
 }
 ```
@@ -35,12 +35,12 @@ Node http transparent proxy with in memory caching for GET calls.
 
 ## internal api
 
-* `/__shutdown` GET - clean process exit
-* `/__flush` GET - empty mem cache
+All endpoints are GET, now we have a help page at `/__help`
+[example](http://localhost:4000/_help)
 
 ## TODO
 
 - [ ] fix unzip/rezip
 - [ ] store good, but slow responses in cache even if we returned smg else already 
 - [ ] option to cache non-GET responses?
-- [ ] __stat endpoint
+- [x] __stat endpoint

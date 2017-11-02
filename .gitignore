@@ -35,3 +35,4 @@ jspm_packages
 *.old
 nodemon.json
 nodemon.json.*
+data/cache.json

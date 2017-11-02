@@ -3,22 +3,8 @@ const http = require('http');
 const https = require('https');
 const config = require('./config');
 const fetch = require('./fetch');
-const cache = require('./cache');
 const logger = require('./logger');
-
-function handleControlApi (url) {
-  let handled;
-  if (url === '/__shutdown') {
-    logger.info('Bye');
-    process.exit(0);
-    handled = true;
-  } else if (url === '/__flush') {
-    logger.info('Flushing cache');
-    cache.flush();
-    handled = true;
-  }
-  return handled;
-}
+const handleControlApi = require('./handle-control-api');
 
 // main http listener
 function listener (req, res) {
@@ -27,15 +13,19 @@ function listener (req, res) {
   let url = req.url;
   let body = [];
 
-  if (config.allowControlUrls && handleControlApi(url)) {
+  if (config.allowControlUrls && handleControlApi(url, res)) {
+    res.end();
     return;
   }
 
   if (config.noFavIcon && url === '/favicon.ico') {
+    res.end();
     return;
   }
+
   if (method !== 'GET') {
     logger.error('Not a GET method!');
+    res.end();
     return;
   }
 
