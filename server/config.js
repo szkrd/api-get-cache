@@ -9,6 +9,6 @@ let config = {
   contentBlacklist: (process.env.CONTENT_BLACKLIST || '').split('|'),
   noFavIcon: true,
   allowControlUrls: true
-};
+}
 
-module.exports = config;
+module.exports = config

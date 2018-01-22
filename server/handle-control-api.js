@@ -1,29 +1,29 @@
-const cache = require('./cache');
+const cache = require('./cache')
 
 module.exports = function handleControlApi (url, res) {
-  let handled;
+  let handled
   if (url === '/__shutdown') {
-    res.write('Bye');
-    res.end();
-    process.exit(0);
-    handled = true;
+    res.write('Bye')
+    res.end()
+    handled = true
+    process.exit(0)
   } else if (url === '/__flush') {
-    res.write('Flushing cache');
-    cache.flush();
-    handled = true;
+    res.write('Flushing cache')
+    cache.flush()
+    handled = true
   } else if (url === '/__save') {
-    res.write('Saving cache');
-    cache.save();
-    handled = true;
+    res.write('Saving cache')
+    cache.save()
+    handled = true
   } else if (url === '/__load') {
-    res.write('Restoring cache...');
-    cache.load();
-    handled = true;
+    res.write('Restoring cache...')
+    cache.load()
+    handled = true
   } else if (url === '/__stat') {
-    res.write('# cache stat\n\n' + cache.stat());
-    handled = true;
+    res.write('# cache stat\n\n' + cache.stat())
+    handled = true
   } else if (url === '/__help') {
-    res.setHeader('content-type', 'text/html');
+    res.setHeader('content-type', 'text/html')
     res.write(`<html><head><title>help</title></title></head><body>
       <ul>
         <li><a href="/__shutdown">shutdown app</a></li>
@@ -32,8 +32,8 @@ module.exports = function handleControlApi (url, res) {
         <li><a href="/__load">load cache from json</a></li>
         <li><a href="/__stat">stat mem cache</a></li>
       </ul>
-    </body></html>`);
-    handled = true;
+    </body></html>`)
+    handled = true
   }
-  return handled;
-};
+  return handled
+}
