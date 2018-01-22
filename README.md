@@ -8,7 +8,7 @@ Node http transparent proxy with in memory caching for GET calls.
 ```json
 {
   "env": {
-    "TARGET": "https://foo.bar.com",
+    "TARGET": "https://api.github.com/",
     "MAX_WAIT_TIME": 1000,
     "TTL": 5000,
 
@@ -31,7 +31,7 @@ Node http transparent proxy with in memory caching for GET calls.
 2. create `nodemon.json`
 3. `npm run dev`
 4. add `yourhost.dev` as 127.0.0.1 to your hosts file (if you want it to match with your cert)
-5. example call url: _https://yourhost.dev:4000/users/johndoe_
+5. example call url: _https://yourhost.dev:4000/users/octocat_
 
 ## internal api
 
