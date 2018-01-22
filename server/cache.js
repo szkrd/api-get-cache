@@ -21,9 +21,13 @@ function retrieve (url, method, desperate) {
   if (!item) {
     return
   }
-  if (Date.now() - item.timestamp > config.ttl) {
+
+  let ttlCheckEnabled = config.ttl > -1
+  let expired = Date.now() - item.timestamp > config.ttl
+  if (ttlCheckEnabled && expired) {
     item.expired = true
   }
+
   if (!desperate && item.expired) {
     return
   }
