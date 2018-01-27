@@ -6,6 +6,14 @@ const fetch = require('./fetch')
 const logger = require('./logger')
 const handleControlApi = require('./handle-control-api')
 
+// for some reason plain writeHead refuses to dump all the header items
+// so we need to use setHead one by one
+function writeHead (res) {
+  let { headers } = res
+  Object.keys(headers).forEach(key => res.setHeader(key, headers[key]))
+  res.writeHead(res.statusCode, res.statusMessage, res.headers)
+}
+
 // main http listener
 function listener (req, res) {
   // let headers = req.headers;
@@ -40,6 +48,7 @@ function listener (req, res) {
         // TODO we might want to deal with non 200 responses here also
         // since it's possible that we could not come up w anything from the cache
         Object.assign(res, remoteResponse)
+        writeHead(res)
         res.end(res.body) // pretty much same as res.write(remoteResponse.body) + res.end()
       })
       .catch((err) => {
