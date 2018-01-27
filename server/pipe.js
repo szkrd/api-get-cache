@@ -7,6 +7,14 @@ let parsedUrl = new URL(config.target)
 
 function pipe (req, res) {
   let transport = parsedUrl.protocol === 'https:' ? https : http
+  let { headers } = req
+
+  if (config.modifyHostHeader) {
+    headers.host = parsedUrl.hostname
+  } else {
+    delete headers.host
+  }
+
   let connector = transport.request({
     host: parsedUrl.hostname,
     port: parsedUrl.port,
