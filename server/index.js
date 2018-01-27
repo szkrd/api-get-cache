@@ -5,7 +5,7 @@ const config = require('./config')
 const fetch = require('./fetch')
 const logger = require('./logger')
 const handleControlApi = require('./internal-api')
-const { writeHead } = require('./utils')
+const { writeHead, modifyCompression } = require('./utils')
 const pipe = require('./pipe')
 
 // main http listener
@@ -43,7 +43,10 @@ function listener (req, res) {
         // TODO we might want to deal with non 200 responses here also
         // since it's possible that we could not come up w anything from the cache
         Object.assign(res, remoteRes)
+
         writeHead(remoteRes, res)
+        modifyCompression(req, res)
+
         res.end(res.body) // pretty much same as res.write(remoteResponse.body) + res.end()
       })
       .catch((err) => {

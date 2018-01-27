@@ -109,10 +109,15 @@ function fetch (req) {
           body
         }
 
-        // if the response is gzipped, unpack it - we can handle it better in the future, should we need an interceptor
-        if (/^g?zip$/.test(res.headers['content-encoding'] || '')) {
+        let isZip = /^g?zip$/.test(res.headers['content-encoding'] || '')
+        let isNotChanged = res.statusCode === 304
+
+        // if the response is gzipped, unpack it and store the unpacked one
+        // (we can handle it better in the future, should we need an interceptor)
+        if (isZip && !isNotChanged) {
           zlib.unzip(body, (err, unzipped) => {
             if (err) {
+              logger.error(err)
               reject(new Error('Could not unzip response.'))
               return
             }
