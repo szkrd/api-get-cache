@@ -7,6 +7,7 @@ let config = {
   maxWaitTime: parseInt(process.env.MAX_WAIT_TIME, 10) || 1000, // 1sec default
   ttl: parseInt(process.env.TTL, 10) || 5000, // 5sec cache ttl
   contentBlacklist: (process.env.CONTENT_BLACKLIST || '').split('|'),
+  modifyHostHeader: Boolean(process.env.MODIFY_HOST_HEADER),
   noFavIcon: true,
   allowControlUrls: true
 }

@@ -4,19 +4,12 @@ const https = require('https')
 const config = require('./config')
 const fetch = require('./fetch')
 const logger = require('./logger')
-const handleControlApi = require('./handle-control-api')
-
-// for some reason plain writeHead refuses to dump all the header items
-// so we need to use setHead one by one
-function writeHead (res) {
-  let { headers } = res
-  Object.keys(headers).forEach(key => res.setHeader(key, headers[key]))
-  res.writeHead(res.statusCode, res.statusMessage, res.headers)
-}
+const handleControlApi = require('./internal-api')
+const { writeHead } = require('./utils')
+const pipe = require('./pipe')
 
 // main http listener
 function listener (req, res) {
-  // let headers = req.headers;
   let method = req.method
   let url = req.url
   let body = []
@@ -31,12 +24,14 @@ function listener (req, res) {
     return
   }
 
+  // let's not deal with anything other then GETs for now
   if (method !== 'GET') {
-    logger.error('Not a GET method!')
-    res.end()
+    logger.info('Not a GET method, piping only.')
+    pipe(req, res)
     return
   }
 
+  // if we want to deal with interceptable POSTs, we will need this body concat, but not now
   req.on('error', (err) => {
     logger.error('Request error', err)
   }).on('data', (chunk) => {
@@ -44,11 +39,11 @@ function listener (req, res) {
   }).on('end', () => {
     body = Buffer.concat(body)
     fetch(req)
-      .then((remoteResponse) => {
+      .then((remoteRes) => {
         // TODO we might want to deal with non 200 responses here also
         // since it's possible that we could not come up w anything from the cache
-        Object.assign(res, remoteResponse)
-        writeHead(res)
+        Object.assign(res, remoteRes)
+        writeHead(remoteRes, res)
         res.end(res.body) // pretty much same as res.write(remoteResponse.body) + res.end()
       })
       .catch((err) => {
@@ -58,17 +53,21 @@ function listener (req, res) {
   })
 }
 
+// -----
+
 logger.info(`Remote target: ${config.target}`)
 
-http.createServer(listener).listen(config.port, () => {
-  logger.info(`Listening on ${config.port}`)
-})
+http.createServer(listener)
+  .listen(config.port, () => {
+    logger.info(`Listening on ${config.port}`)
+  })
 
 if (config.httpsKey && config.httpsCert && config.httpsPort) {
-  https.createServer({
-    key: fs.readFileSync(config.httpsKey),
-    cert: fs.readFileSync(config.httpsCert)
-  }, listener).listen(config.httpsPort, () => {
-    logger.info(`Listening on ${config.httpsPort}`)
-  })
+  const key = fs.readFileSync(config.httpsKey)
+  const cert = fs.readFileSync(config.httpsCert)
+
+  https.createServer({ key, cert }, listener)
+    .listen(config.httpsPort, () => {
+      logger.info(`Listening on ${config.httpsPort}`)
+    })
 }

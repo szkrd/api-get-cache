@@ -14,8 +14,15 @@ function isContentValid (body) {
 }
 
 function handleResponse (request, result) {
+  let { statusCode } = result
+
+  // not modified
+  if (statusCode === 304) {
+    return true
+  }
+
   // if result is okay, store in cache, otherwise try things
-  if (result.statusCode === 200 && isContentValid(result.body)) {
+  if (statusCode === 200 && isContentValid(result.body)) {
     cache.store(request.url, request.method, result)
     return true
   }
@@ -44,7 +51,11 @@ function fetch (req) {
     let cacheNotice = (s) => logger.info(`Using cached response (${req.url}). ${s}`)
     let noResponseError = () => new Error(`No response (neither cached, nor live seems to be available - ${req.url}).`)
 
-    headers.host = targetHostWithPort
+    if (config.modifyHostHeader) {
+      headers.host = targetHostWithPort
+    } else {
+      delete headers.host
+    }
 
     let options = {
       hostname: targetHostNoPort,
