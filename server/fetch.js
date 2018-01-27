@@ -37,15 +37,20 @@ function fetch (req) {
     let headers = Object.assign({}, req.headers)
     let alreadyResolved = false
     let isHttpsTarget = /^https:/.test(config.target)
-    let targetPort = parseInt((config.target.match(/:(\d+)/) || [])[1], 10)
+    let targetPort = parseInt((config.target.match(/:(\d+)/) || [])[1], 10) || (isHttpsTarget ? 443 : 80)
+    let targetHostWithPort = config.target.replace(/^https?:\/\//, '').replace(/\/.*/, '')
+    let targetHostNoPort = targetHostWithPort.replace(/:\d+\/?$/, '')
+
     let cacheNotice = (s) => logger.info(`Using cached response (${req.url}). ${s}`)
     let noResponseError = () => new Error(`No response (neither cached, nor live seems to be available - ${req.url}).`)
-    delete headers.host // TODO use requester's hostname, not ours, but it's not a big deal
+
+    headers.host = targetHostWithPort
+
     let options = {
-      hostname: config.target.replace(/:\d+\/?$/, '').replace(/^https?:\/\//, ''),
+      hostname: targetHostNoPort,
       encoding: null,
       rejectUnauthorized: false,
-      port: targetPort || (isHttpsTarget ? 443 : 80),
+      port: targetPort,
       path: req.url,
       method: req.method,
       headers
