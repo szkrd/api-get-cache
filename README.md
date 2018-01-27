@@ -8,7 +8,7 @@ so I can keep on working even if the remote server is being restarted (which may
 for minutes).
 
 Sometimes I need to work with http only api endpoints, but my local server
-needs to be https, so to avoid downgrading I can add my own cert. An an _ideal world_
+needs to be https, so to avoid downgrading I can add my own cert. In an _ideal world_
 the backend api would return https with the same dev cert the frontend team uses.
 
 Anything production related you are probably looking for something
