@@ -2,8 +2,39 @@ const urlParser = require('url')
 const cache = require('./cache')
 const config = require('./config')
 
-module.exports = function handleControlApi (url, res) {
+// WIP - TODO add per route
+/*
+const authLock = res => {
+  res.statusCode = 401
+  res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"')
+  res.write('Needs auth.')
+}
+
+const isAllowed = (req, res) => {
+  if (config.username && config.password) {
+    let auth = req.headers['authorization']
+    if (!auth) {
+      authLock(res)
+      return false
+    } else {
+      let buffer = Buffer.from(auth.split(' ')[1], 'base64').toString()
+      let secret = buffer.split(':')
+      if (secret[0] !== config.username || secret[1] !== config.password) {
+        authLock(res)
+        return false
+      }
+    }
+  }
+  return true
+}
+*/
+
+module.exports = function handleControlApi (req, res) {
+  let url = req.url
   let handled
+
+  // routing
+  // -------
   if (url === '/__shutdown') {
     res.write('Bye')
     res.end()

@@ -14,7 +14,7 @@ function listener (req, res) {
   let url = req.url
   let body = []
 
-  if (config.allowControlUrls && handleControlApi(url, res)) {
+  if (config.allowControlUrls && handleControlApi(req, res)) {
     res.end()
     return
   }
