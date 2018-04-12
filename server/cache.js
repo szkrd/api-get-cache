@@ -63,7 +63,7 @@ function load () {
 
 function stat () {
   let keys = Object.keys(cache)
-  return keys.length ? `Keys:\n ${keys.join('\n')}` : 'empty\n'
+  return keys.length ? `Keys:\n${keys.join('\n')}` : 'empty\n'
 }
 
 module.exports = {
