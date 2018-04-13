@@ -2,8 +2,7 @@ const urlParser = require('url')
 const cache = require('./cache')
 const config = require('./config')
 
-// WIP - TODO add per route
-/*
+// WIP - TODO extract routes
 const authLock = res => {
   res.statusCode = 401
   res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"')
@@ -27,35 +26,60 @@ const isAllowed = (req, res) => {
   }
   return true
 }
-*/
 
 module.exports = function handleControlApi (req, res) {
   let url = req.url
-  let handled
 
   // routing
   // -------
   if (url === '/__shutdown') {
+    if (!isAllowed(req, res)) {
+      return true
+    }
     res.write('Bye')
     res.end()
-    handled = true
     process.exit(0)
-  } else if (url === '/__flush') {
+  }
+
+  if (url === '/__flush') {
+    if (!isAllowed(req, res)) {
+      return true
+    }
     res.write('Flushing cache')
     cache.flush()
-    handled = true
-  } else if (url === '/__save') {
+    return true
+  }
+
+  if (url === '/__save') {
+    if (!isAllowed(req, res)) {
+      return true
+    }
     res.write('Saving cache')
     cache.save()
-    handled = true
-  } else if (url === '/__load') {
+    return true
+  }
+
+  if (url === '/__load') {
+    if (!isAllowed(req, res)) {
+      return true
+    }
     res.write('Restoring cache...')
     cache.load()
-    handled = true
-  } else if (url === '/__stat') {
+    return true
+  }
+
+  if (url === '/__stat') {
+    if (!isAllowed(req, res)) {
+      return true
+    }
     res.write('# cache stat\n\n' + cache.stat())
-    handled = true
-  } else if (url === '/__help') {
+    return true
+  }
+
+  if (url === '/__help') {
+    if (!isAllowed(req, res)) {
+      return true
+    }
     res.setHeader('content-type', 'text/html')
     res.write(`<html><head><title>help</title></title></head><body>
       <ul>
@@ -73,8 +97,13 @@ module.exports = function handleControlApi (req, res) {
         </li>
       </ul>
     </body></html>`)
-    handled = true
-  } else if (url.startsWith('/__set_target')) {
+    return true
+  }
+
+  if (url.startsWith('/__set_target')) {
+    if (!isAllowed(req, res)) {
+      return true
+    }
     const q = urlParser.parse(url, true).query
     const doFlush = q.flush === '1'
     if (q.target && q.target.startsWith('http')) {
@@ -90,7 +119,8 @@ module.exports = function handleControlApi (req, res) {
     } else {
       res.write('Invalid target.')
     }
-    handled = true
+    return true
   }
-  return handled
+
+  return false
 }
