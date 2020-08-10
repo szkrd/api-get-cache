@@ -10,7 +10,7 @@ function isContentValid (body) {
   if (!blacklist.length) {
     return true
   }
-  return blacklist.every(s => body.indexOf(s) === -1)
+  return blacklist.filter(x => x.trim()).every(s => body.indexOf(s) === -1)
 }
 
 function handleResponse (request, result) {
@@ -19,6 +19,10 @@ function handleResponse (request, result) {
   // not modified
   if (statusCode === 304) {
     return true
+  }
+
+  if (statusCode === 200 && result.body instanceof Buffer) {
+    result.body = result.body.toString()
   }
 
   // if result is okay, store in cache, otherwise try things
@@ -50,6 +54,10 @@ function fetch (req) {
 
     let cacheNotice = (s) => logger.info(`Using cached response (${req.url}). ${s}`)
     let noResponseError = () => new Error(`No response (neither cached, nor live seems to be available - ${req.url}).`)
+
+    if (config.authBearer) {
+      headers.Authorization = `Bearer ${config.authBearer}`
+    }
 
     if (config.modifyHostHeader) {
       headers.host = targetHostWithPort

@@ -1,6 +1,7 @@
 let config = {
   username: process.env.USERNAME || '',
   password: process.env.PASSWORD || '',
+  authBearer: process.env.AUTH_BEARER || '',
   port: parseInt(process.env.PORT, 10) || 80,
   httpsPort: parseInt(process.env.HTTPS_PORT, 10) || 443,
   target: process.env.TARGET.replace(/\/+$/, ''),

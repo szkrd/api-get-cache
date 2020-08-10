@@ -21,6 +21,7 @@ like [Varnish](http://varnish-cache.org/).
   "env": {
     "USERNAME": "foo",
     "PASSWORD": "bar",
+    "AUTH_BEARER": "eyJhbGcOIUz1NiJ9.foobar,bazqux",
     "TARGET": "https://api.github.com/",
     "MAX_WAIT_TIME": 1000,
     "TTL": 5000,
@@ -35,10 +36,11 @@ like [Varnish](http://varnish-cache.org/).
 ```
 
 * `USERNAME` and `PASSWORD` are optional (if present, basic auth will be used)
+* `AUTH_BEARER` (inject as authorization bearer token into header), is optional
 * `SSL` section (cert, key, https_port) is optional
-* `TTL` is the cache item ttl in msec, use **-1** for infinity
+* `TTL` is the cache item ttl in msec, use **-1** for infinity, default is 5 sec
 * `MODIFY_HOST_HEADER` true replaces current host with target host in the request
-* `CONTENT_BLACKLIST` is a pipe separated list of strings, blacklisted resources will not be saved
+* `CONTENT_BLACKLIST` is a pipe separated list of strings (blacklisted resources will not be saved)
 
 Defaults are in [config.js](./server/config.js).
 
